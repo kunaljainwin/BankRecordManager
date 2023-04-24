@@ -4,34 +4,18 @@ namespace std{
     enum ServiceType{
     SAVINGS_ACCOUNT=1,
     CURRENT_ACCOUNT=2,
-    FIXED_DEPOSIT=4,
-    MEDICAL_INSURANCE=8,
-    MUTUAL_FUND=16,
-    DEMAT=32,
-    ESTATEMENT=64,
-    PASSBOOK=128,
-    LOCKER=256,
+    LOCKER=4,
+    PASSBOOK=8,
+    MEDICAL_INSURANCE=16,
+    LIFE_INSURANCE=32,
+    MUTUAL_FUND=64,
+    FIXED_DEPOSIT=128,
+    DEMAT=256,
     NOMINATION=512,
-    LIFE_INSURANCE=1024,
+    ESTATEMENT=64,
     ACTIVE=2048,
     DELETED=4096
 };
-// map<int,    
-
-// > ServiceTypeMap={
-//     {SAVINGS_ACCOUNT,tagSavingAccount},
-//     {CURRENT_ACCOUNT,tagCurrentAccount},
-//     {FIXED_DEPOSIT,tagFixedDeposit},
-//     {MEDICAL_INSURANCE,tagMedicalInsurance},
-//     {MUTUAL_FUND,tagMutualFund},
-//     {DEMAT,tagDemat},
-//     {ESTATEMENT,tagEStatement},
-//     {PASSBOOK,tagPassbook},
-//     {LOCKER,tagLocker},
-//     {NOMINATION,tagNomination},
-//     {LIFE_INSURANCE,tagLifeInsurance},
-  
-// };
 static bool isValidAmount(string strAmount){
 // regex for any number
 
@@ -98,6 +82,11 @@ static bool isValidAmount(string strAmount){
     }
 struct tagCurrentAccount {
    float lfBalance;
+
+
+   tagCurrentAccount(){
+         lfBalance=0;
+   }
     void Create(){
         string strAmount;
         do{
@@ -119,6 +108,10 @@ struct tagCurrentAccount {
 };
 struct tagSavingAccount {
    float lfBalance;
+    tagSavingAccount(){
+            lfBalance=0;
+    }
+
     void Create(){
         string strAmount;
         
@@ -165,6 +158,9 @@ struct tagEStatement {
 struct tagDemat
 {
     char lcNumber[17];
+    tagDemat(){
+        strcpy(lcNumber,"xxxxxxxxxxxxxxxx");
+    }
     void Create(){
         string lstrTemp;
         do{
@@ -192,6 +188,10 @@ struct tagFixedDeposit
 {
     unsigned short int lnCount;
     float lfDepositAmount;
+    tagFixedDeposit(){
+        lnCount=0;
+        lfDepositAmount=0;
+    }
     void Create(){
         // not takign count input
         string strAmount;
@@ -220,6 +220,10 @@ struct tagLifeInsurance
 {
     unsigned short int lnCount;
     float lfPolicyCoverage;
+    tagLifeInsurance(){
+        lnCount=0;
+        lfPolicyCoverage=0;
+    }
     void Create(){
         // not takign count input
         string strAmount;
@@ -245,6 +249,7 @@ struct tagLifeInsurance
     
 };
 struct tagLocker {
+
     void Create(){
                 
                 }
@@ -262,6 +267,9 @@ puts("Locker Modified ");
 struct tagMedicalInsurance
 {
     float lfCoverage;
+    tagMedicalInsurance(){
+        lfCoverage=0;
+    }
     void Create(){
         string strAmount;
         do{
@@ -288,6 +296,9 @@ struct tagMedicalInsurance
 struct tagMutualFund
 {
     float lfInvestmentAmount;
+    tagMutualFund(){
+        lfInvestmentAmount=0;
+    }
     void Create(){
         string strAmount;
         do{
@@ -314,6 +325,10 @@ struct tagMutualFund
 {
     int lnCount;
     char lcName[3][50]={"","",""};
+    tagNomination(){
+        lnCount=0;
+        
+    }
     void Create(){
         string strName;
         cout << "\nPlease Enter the Number of Nominees: ";
@@ -352,12 +367,22 @@ cout << "\nNominee Name: " << lcName[i];
 };
 
 struct tagRecord{
+    tagRecord(){
+        nAccountNo=0;
+        sFirstName[0]='\0';
+        sLastName[0]='\0';
+        sCity[0]='\0';
+        sMobile[0]='\0';
+        sEmailId[0]='\0';
+        nServiceFlag=0;
+
+    }
 
     private:
     long nAccountNo=0;
     char sFirstName[24+1]="";
     char sLastName[24+1]="";
-    char sCity[25+1]="";
+    char sCity[24+1]="";
     char sMobile[10+1]="";// or  long long nMobile;
     char sEmailId[40+1]="";
     
@@ -369,7 +394,7 @@ struct tagRecord{
     
     public:
     short int nServiceFlag=0;
-    map<int ,void *>mapService;
+    map<short int ,void *>mapService;
     void CreateRecord(){
     string lstrTemp;
     nServiceFlag+=ACTIVE;
@@ -383,7 +408,6 @@ struct tagRecord{
 
     }
    strcpy(sFirstName,lstrTemp.c_str());
-    cin.clear();
 
 
     cout << "\nEnter the Last Name of the Account holder : ";
@@ -395,11 +419,7 @@ struct tagRecord{
         cin >> lstrTemp;
     }
     strcpy(sLastName,lstrTemp.c_str());
-    //    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-    //    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-    //    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    
 
 
     
@@ -771,8 +791,8 @@ nServiceFlag+=CURRENT_ACCOUNT;
             
         }
         else if(lstrTemp=="2"){
-             do{
-                 cout << "\nPlease enter the new Last Name: ";
+            do{
+                cout << "\nPlease enter the new Last Name: ";
                 cin>>lstrTemp;
 
             }
