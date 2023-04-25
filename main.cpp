@@ -272,6 +272,7 @@ public:
         // create csv file
         remove("export.csv");
         lExportFile.open("export.csv", ios::out | ios::trunc);
+        \
         // loop through all records
         lExportFile << "Account Number,First Name,Last Name,City,Mobile,Email,Saving Account Balance,Current Account Balance,Fixed Deposit count,Fixed Deposit Amount,Mutual Fund Amount,Demat,Nomination count,n1,n2,n3,Life Insurance count,Insurance policy coverage" << endl;
         lExportFile << endl;
@@ -355,7 +356,7 @@ int main()
 {
    ReleaseMode();
 
-    cout<<sizeof(long)<<endl;// 184
+    // cout<<sizeof(tagRecord)<<endl;// 184
     return 0;
 }
 
