@@ -198,50 +198,56 @@ public:
         {
             // outFile.write(reinterpret_cast<char *>(*it), sizeof(tagRecord));
             outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]), sizeof(tagRecord) - 48);
-            if ((vecRecord[lnCounter]->nServiceFlag & SAVINGS_ACCOUNT) == SAVINGS_ACCOUNT)
+            for(auto it:vecRecord[lnCounter]->mapService){
+                  if (vecRecord[lnCounter]->nServiceFlag & it.first)
             {
-                outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[SAVINGS_ACCOUNT]), sizeof(tagSavingAccount));
+                outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[it.first]), mapServiceSize[it.first]);
             }
-            if ((vecRecord[lnCounter]->nServiceFlag & CURRENT_ACCOUNT) == CURRENT_ACCOUNT)
-            {
-                outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[CURRENT_ACCOUNT]), sizeof(tagCurrentAccount));
             }
-            if ((vecRecord[lnCounter]->nServiceFlag & FIXED_DEPOSIT) == FIXED_DEPOSIT)
-            {
-                outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[FIXED_DEPOSIT]), sizeof(tagFixedDeposit));
-            }
-            if ((vecRecord[lnCounter]->nServiceFlag & MEDICAL_INSURANCE) == MEDICAL_INSURANCE)
-            {
-                outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[MEDICAL_INSURANCE]), sizeof(tagMedicalInsurance));
-            }
-            if ((vecRecord[lnCounter]->nServiceFlag & MUTUAL_FUND) == MUTUAL_FUND)
-            {
-                outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[MUTUAL_FUND]), sizeof(tagMutualFund));
-            }
-            if ((vecRecord[lnCounter]->nServiceFlag & DEMAT) == DEMAT)
-            {
-                outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[DEMAT]), sizeof(tagDemat));
-            }
-            if ((vecRecord[lnCounter]->nServiceFlag & ESTATEMENT) == ESTATEMENT)
-            {
-                outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[ESTATEMENT]), sizeof(tagEStatement));
-            }
-            if ((vecRecord[lnCounter]->nServiceFlag & PASSBOOK) == PASSBOOK)
-            {
-                outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[PASSBOOK]), sizeof(tagPassbook));
-            }
-            if ((vecRecord[lnCounter]->nServiceFlag & LOCKER) == LOCKER)
-            {
-                outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[LOCKER]), sizeof(tagLocker));
-            }
-            if ((vecRecord[lnCounter]->nServiceFlag & NOMINATION) == NOMINATION)
-            {
-                outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[NOMINATION]), sizeof(tagNomination));
-            }
-            if ((vecRecord[lnCounter]->nServiceFlag & LIFE_INSURANCE) == LIFE_INSURANCE)
-            {
-                outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[LIFE_INSURANCE]), sizeof(tagLifeInsurance));
-            }
+            // if ((vecRecord[lnCounter]->nServiceFlag & SAVINGS_ACCOUNT) == SAVINGS_ACCOUNT)
+            // {
+            //     outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[SAVINGS_ACCOUNT]), sizeof(tagSavingAccount));
+            // }
+            // if ((vecRecord[lnCounter]->nServiceFlag & CURRENT_ACCOUNT) == CURRENT_ACCOUNT)
+            // {
+            //     outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[CURRENT_ACCOUNT]), sizeof(tagCurrentAccount));
+            // }
+            // if ((vecRecord[lnCounter]->nServiceFlag & FIXED_DEPOSIT) == FIXED_DEPOSIT)
+            // {
+            //     outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[FIXED_DEPOSIT]), sizeof(tagFixedDeposit));
+            // }
+            // if ((vecRecord[lnCounter]->nServiceFlag & MEDICAL_INSURANCE) == MEDICAL_INSURANCE)
+            // {
+            //     outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[MEDICAL_INSURANCE]), sizeof(tagMedicalInsurance));
+            // }
+            // if ((vecRecord[lnCounter]->nServiceFlag & MUTUAL_FUND) == MUTUAL_FUND)
+            // {
+            //     outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[MUTUAL_FUND]), sizeof(tagMutualFund));
+            // }
+            // if ((vecRecord[lnCounter]->nServiceFlag & DEMAT) == DEMAT)
+            // {
+            //     outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[DEMAT]), sizeof(tagDemat));
+            // }
+            // if ((vecRecord[lnCounter]->nServiceFlag & ESTATEMENT) == ESTATEMENT)
+            // {
+            //     outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[ESTATEMENT]), sizeof(tagEStatement));
+            // }
+            // if ((vecRecord[lnCounter]->nServiceFlag & PASSBOOK) == PASSBOOK)
+            // {
+            //     outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[PASSBOOK]), sizeof(tagPassbook));
+            // }
+            // if ((vecRecord[lnCounter]->nServiceFlag & LOCKER) == LOCKER)
+            // {
+            //     outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[LOCKER]), sizeof(tagLocker));
+            // }
+            // if ((vecRecord[lnCounter]->nServiceFlag & NOMINATION) == NOMINATION)
+            // {
+            //     outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[NOMINATION]), sizeof(tagNomination));
+            // }
+            // if ((vecRecord[lnCounter]->nServiceFlag & LIFE_INSURANCE) == LIFE_INSURANCE)
+            // {
+            //     outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[LIFE_INSURANCE]), sizeof(tagLifeInsurance));
+            // }
             // Free memory used by services
             for (auto &it : vecRecord[lnCounter]->mapService)
             {
@@ -354,6 +360,17 @@ void TestMode()
 // Driver program
 int main()
 {
+mapServiceSize[SAVINGS_ACCOUNT]=sizeof(tagSavingAccount);
+mapServiceSize [CURRENT_ACCOUNT]=sizeof(tagCurrentAccount);
+mapServiceSize [LOCKER]=sizeof(tagLocker);
+mapServiceSize [PASSBOOK]=sizeof(tagPassbook);
+mapServiceSize [MEDICAL_INSURANCE]=sizeof(tagMedicalInsurance);
+mapServiceSize [LIFE_INSURANCE]=sizeof(tagLifeInsurance);
+mapServiceSize [MUTUAL_FUND]=sizeof(tagMutualFund);
+mapServiceSize [FIXED_DEPOSIT]=sizeof(tagFixedDeposit);
+mapServiceSize [DEMAT]=sizeof(tagDemat);
+mapServiceSize [NOMINATION]=sizeof(tagNomination);
+mapServiceSize [ESTATEMENT]=sizeof(tagEStatement);
    ReleaseMode();
 
     // cout<<sizeof(tagRecord)<<endl;// 184

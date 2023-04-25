@@ -16,6 +16,9 @@ namespace std{
     ACTIVE=2048,
     DELETED=4096
 };
+map<unsigned int,unsigned int> mapServiceSize;
+
+
 static bool isValidAmount(string strAmount){
 // regex for any number
 
@@ -276,7 +279,6 @@ puts("Locker Modified ");
                 }
         };
 
-
 struct tagMedicalInsurance
 {
     float lfCoverage;
@@ -308,7 +310,6 @@ struct tagMedicalInsurance
 };
 struct tagMutualFund
 {
-   
     float lfInvestmentAmount;
     tagMutualFund(){
         lfInvestmentAmount=0.0;
@@ -335,13 +336,13 @@ struct tagMutualFund
         lfInvestmentAmount=stof(strAmount);
     }
 };
-  struct tagNomination
+
+struct tagNomination
 {
     unsigned int lnCount;
-    char lcName[3][24+1]={"","",""};
+    char lcName[3][24+1];
     tagNomination(){
         lnCount=0;
-        
     }
     void Create(){
         string strName;
@@ -991,6 +992,7 @@ cout<<"\n2.Current Account";
         cout << "\nCity: " <<sCity; 
         cout << "\nMobile Number: " <<sMobile;
         cout << "\nEmail: " <<sEmailId;
+        
         if((nServiceFlag&SAVINGS_ACCOUNT)==SAVINGS_ACCOUNT)
         {
             
@@ -1110,11 +1112,17 @@ if((nServiceFlag&MUTUAL_FUND)==MUTUAL_FUND)
             inFile.read((char*)ptr,sizeof(tagCurrentAccount));
             mapService[CURRENT_ACCOUNT]=ptr;
         }
-        if((nServiceFlag&FIXED_DEPOSIT)==FIXED_DEPOSIT)
+         if((nServiceFlag&LOCKER)==LOCKER)
         {
-            tagFixedDeposit*ptr=new tagFixedDeposit;
-            inFile.read((char*)ptr,sizeof(tagFixedDeposit));
-            mapService[FIXED_DEPOSIT]=ptr;
+            tagLocker*ptr=new tagLocker;
+            inFile.read((char*)ptr,sizeof(tagLocker));
+            mapService[LOCKER]=ptr;
+        }
+            if((nServiceFlag&PASSBOOK)==PASSBOOK)
+        {
+            tagPassbook*ptr=new tagPassbook;
+            inFile.read((char*)ptr,sizeof(tagPassbook));
+            mapService[PASSBOOK]=ptr;
         }
         if((nServiceFlag&MEDICAL_INSURANCE)==MEDICAL_INSURANCE)
         {
@@ -1122,12 +1130,26 @@ if((nServiceFlag&MUTUAL_FUND)==MUTUAL_FUND)
             inFile.read((char*)ptr,sizeof(tagMedicalInsurance));
             mapService[MEDICAL_INSURANCE]=ptr;
         }
+        if((nServiceFlag&LIFE_INSURANCE)==LIFE_INSURANCE)
+        {
+            tagLifeInsurance*ptr=new tagLifeInsurance;
+            inFile.read((char*)ptr,sizeof(tagLifeInsurance));
+            mapService[LIFE_INSURANCE]=ptr;
+        }
         if((nServiceFlag&MUTUAL_FUND)==MUTUAL_FUND)
         {
             tagMutualFund*ptr=new tagMutualFund;
             inFile.read((char*)ptr,sizeof(tagMutualFund));
             mapService[MUTUAL_FUND]=ptr;
         }
+        if((nServiceFlag&FIXED_DEPOSIT)==FIXED_DEPOSIT)
+        {
+            tagFixedDeposit*ptr=new tagFixedDeposit;
+            inFile.read((char*)ptr,sizeof(tagFixedDeposit));
+            mapService[FIXED_DEPOSIT]=ptr;
+        }
+        
+        
 
         if((nServiceFlag&DEMAT)==DEMAT)
         {
@@ -1135,36 +1157,22 @@ if((nServiceFlag&MUTUAL_FUND)==MUTUAL_FUND)
             inFile.read((char*)ptr,sizeof(tagDemat));
             mapService[DEMAT]=ptr;
         }
+         if((nServiceFlag&NOMINATION)==NOMINATION)
+        {
+            tagNomination*ptr=new tagNomination;
+            inFile.read((char*)ptr,sizeof(tagNomination));
+            mapService[NOMINATION]=ptr;
+        }
         if((nServiceFlag&ESTATEMENT)==ESTATEMENT)
         {
             tagEStatement*ptr=new tagEStatement;
             inFile.read((char*)ptr,sizeof(tagEStatement));
             mapService[ESTATEMENT]=ptr;
         }
-       if((nServiceFlag&PASSBOOK)==PASSBOOK)
-        {
-            tagPassbook*ptr=new tagPassbook;
-            inFile.read((char*)ptr,sizeof(tagPassbook));
-            mapService[PASSBOOK]=ptr;
-        }
-        if((nServiceFlag&LOCKER)==LOCKER)
-        {
-            tagLocker*ptr=new tagLocker;
-            inFile.read((char*)ptr,sizeof(tagLocker));
-            mapService[LOCKER]=ptr;
-        }
-        if((nServiceFlag&NOMINATION)==NOMINATION)
-        {
-            tagNomination*ptr=new tagNomination;
-            inFile.read((char*)ptr,sizeof(tagNomination));
-            mapService[NOMINATION]=ptr;
-        }
-        if((nServiceFlag&LIFE_INSURANCE)==LIFE_INSURANCE)
-        {
-            tagLifeInsurance*ptr=new tagLifeInsurance;
-            inFile.read((char*)ptr,sizeof(tagLifeInsurance));
-            mapService[LIFE_INSURANCE]=ptr;
-        }
+   
+      
+       
+         
     }
     void ExportRecord(fstream &lExportFile){
         lExportFile<<nAccountNo<<",";
