@@ -1,1268 +1,383 @@
 
+#include <iostream>
+#include <vector>
+#include <map>
+#include <regex>
+#include <fstream>
+#include <limits>
+#include <sstream>
+#include <string>
+#include <cstring>
+// local header files
+#include "header.h"
 
-namespace std{
-    enum ServiceType{
-    SAVINGS_ACCOUNT=1,
-    CURRENT_ACCOUNT=2,
-    LOCKER=4,
-    PASSBOOK=8,
-    MEDICAL_INSURANCE=16,
-    LIFE_INSURANCE=32,
-    MUTUAL_FUND=64,
-    FIXED_DEPOSIT=128,
-    DEMAT=256,
-    NOMINATION=512,
-    ESTATEMENT=1024,
-    ACTIVE=2048,
-    DELETED=4096
-};
-static bool isValidAmount(string strAmount){
-// regex for any number
+using namespace std;
 
-        const regex pattern("[0-9][0-9]*+[.|'']?[0-9]*");
-        if(regex_match(strAmount,pattern)){
-            return true;
-        }
-        else{
-            return false;
-        }
-    
-    
-
-    }
-   static bool IsValidMobileNumber(string strMobileNumber){
-        const regex pattern("(0|91)?[6-9][0-9]{9}");
-
-    if (regex_match(strMobileNumber, pattern))
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-    }
-    static bool IsValidName(string strName){
-        const regex pattern("[a-zA-Z]{2,20}");
-
-    if (regex_match(strName, pattern))
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-    }
-    static bool IsValidEmail(string strEmail){
-        const regex pattern("[a-zA-Z0-9]+[.|'']?[a-zA-Z0-9]+@[a-zA-Z]+.com");
-
-    if (regex_match(strEmail, pattern))
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-    }
-     static bool IsValidDematAccNumber(string strDematAccNumber)
+class CMain
 {
 
-    const regex pattern("(IN|[0-9]{2})[0-9]{14}");
+public:
+    long m_snNextAccountNum = 0;
+    vector<tagRecord *> vecRecord;
+    map<long long, tagRecord *> mapRecord;
 
-    if (regex_match(strDematAccNumber, pattern))
+    void menu()
     {
-        return true;
+        cout << "\n***************************************" << endl;
+        cout << "       WELCOME TO STAR BANK      \n";
+        cout << "***************************************" << endl;
+        cout << "Please choose an option to proceed" << endl;
+
+        cout << "\n1. OPEN NEW RECORD";
+        cout << "\n2. MODIFY A RECORD";
+        cout << "\n3. DELETE A RECORD";
+        cout << "\n4. DISPLAY A RECORD";
+        cout << "\n5. DISPLAY ALL RECORDS";
+        cout << "\n6. IMPORT RECORDS FROM FILE";
+        cout << "\n7. EXPORT RECORDS TO FILE";
+        cout << "\n19. EXIT";
+        // END
+        cout << "\nYour Choice: ";
     }
-    else
+    void AddRecord()
     {
-        return false;
-    }
-    }
-struct tagCurrentAccount {
-   float lfBalance;
 
+        tagRecord *ptrtagRecord = new tagRecord;
+        ptrtagRecord->CreateRecord();
+        ptrtagRecord->SetAccountNo(vecRecord.size() + 1);
+        cout << "\nYour Account No. is: " << ptrtagRecord->GetAccountNumber();
+        cout << "\nKeep this for future reference.";
+        vecRecord.push_back(ptrtagRecord);
+        mapRecord[atoll(ptrtagRecord->GetMobile().c_str())] = ptrtagRecord;
+        // write to file
+        // no
 
-   tagCurrentAccount(){
-         lfBalance=0;
-   }
-    void Create(){
-        string strAmount;
-        do{
-             cout << "\nPlease Enter the Amount : ";
-         cin >> strAmount;
-        }
-        while(!isValidAmount(strAmount));
-        lfBalance=stof(strAmount);
+        // completed
     }
-    void Display(){
-         cout << "\nCurrent Account Balance: " << lfBalance;
-    }
-    void Modify(){
-            string strAmount;
-            cout << "\nPlease Enter the Amount to be Deposited: ";
-            cin >> strAmount;
-            lfBalance+=stof(strAmount);
-    }
-};
-struct tagSavingAccount {
-   float lfBalance;
-    tagSavingAccount(){
-            lfBalance=0;
-    }
-
-    void Create(){
-        string strAmount;
-        
-cout << "\nPlease Enter Initial Account Balance\nMin Balance for Saving Account: Rs 1000.";
-    cout << "\nMin Balance for Current Account: Rs 5000.";
-        do{
-             cout << "\nPlease Enter the Amount : ";
-         cin >> strAmount;
-        }
-        while(!isValidAmount(strAmount));
-        lfBalance=stof(strAmount);
-    }
-   void Display(){
-       cout << "\nSaving Account Balance: " << lfBalance;
-   }    
-   void Modify(){
-         string strAmount;
-         cout << "\nPlease Enter the Amount to be Deposited: ";
-         cin >> strAmount;
-         lfBalance+=stof(strAmount);
-   }
-};
-struct tagEStatement {
-    void Create(){
-                
-                }
-           
-                void Display(){
-                    cout << "\nEStatement: ";
-                }
-                void Modify(){
-                    cout << "\nEStatement: ";
-                }
-        };
-        struct tagPassbook {
-    void Create(){
-                
-                }
-           
-                void Display(){
-                    cout << "\nPassbook: ";
-                }
-        };
-struct tagDemat
-{
-    char lcNumber[16+1];
-    tagDemat(){
-        strcpy_s(lcNumber,"xxxxxxxxxxxxxxxx");
-    }
-    void Create(){
-        string lstrTemp;
-        do{
-            cout << "\nPlease Enter the Demat Account Number: ";
-        cin >> lstrTemp;
-        }
-        while (IsValidDematAccNumber(lstrTemp)==false);
-        strcpy_s(lcNumber,lstrTemp.c_str());
-        
-    }
-    void Display(){
-        cout << "\nDemat Account Number: " << lcNumber;
-   }
-   void Modify(){
-         string lstrTemp;
-          do{
-                cout << "\nPlease Enter the Demat Account Number: ";
-          cin >> lstrTemp;
-          }
-          while (IsValidDematAccNumber(lstrTemp)==false);
-          strcpy_s(lcNumber,lstrTemp.c_str());
-   }    
-};
-struct tagFixedDeposit
-{
-    unsigned int lnCount;
-    float lfDepositAmount[5];
-    tagFixedDeposit(){
-        lnCount=0;
-        float lfDepositAmount[5]={0.0};
-    }
-    void Create(){
-       string count;
-        do{
-            cout << "\nPlease Enter the Number of Fixed Deposits: ";
-        cin >> count;
-        }
-        while(!(isValidAmount(count)&&stoi(count)>0&&stoi(count)<5));
-        lnCount=stoi(count);
-        for(int i=0;i<lnCount;i++){
-            string strAmount;
-            do{
-                cout << "\nPlease Enter the Deposit Amount: ";
-            cin >> strAmount;
+    void ModifyARecord()
+    {
+        puts("Choose from the option below");
+        puts("Modify using Account Number (1)");
+        puts("Modify using Mobile Number (2)");
+        string strChoice;
+        cin >> strChoice;
+        cin.clear();
+        // opt for search by account no.
+        if (strChoice == "1")
+        {
+            string strAccountNo;
+            cout << "Enter Account Number: ";
+            cin >> strAccountNo;
+            if (stoi(strAccountNo) > vecRecord.size() || stoi(strAccountNo) < 0)
+            {
+                cout << "Invalid Account Number";
+                return;
             }
-            while(isValidAmount(strAmount)==false);
-            lfDepositAmount[i]=stof(strAmount);
+            vecRecord[stoi(strAccountNo) - 1]->ModifyRecord();
         }
+        // opt for search by mobile no.
+        else if (strChoice == "2")
+        {
+            string strMobileNo;
+            do
+            {
+                cout << "Enter Mobile Number: ";
+                cin >> strMobileNo;
+            } while (!IsValidMobileNumber(strMobileNo));
+
+            mapRecord[atoll(strMobileNo.c_str())]->ModifyRecord();
+        }
+        else
+        {
+            puts("Invalid Choice");
+            return;
+        }
+
+        WriteRecordsToBinary();
+
+        // give option to modify any field
+        // modify record from vector
+
+        // completed
+    }
+    void DeleteARecord()
+    {
+        // delete record from vector
+        // completed
+        long nAccountNo;
+        cout << "Enter Account Number to delete: ";
+        cin >> nAccountNo;
         
-    }
-    void Display(){
-        cout << "\nFixed Deposit Amounts ("<<lnCount<<"): "<<endl;
-        for(int i=0;i<lnCount;i++){
-            cout << " " << lfDepositAmount[i];
-        }
-    }
-    void Modify(){
-        Create();
+        vecRecord[nAccountNo]->CloseRecord();
+        puts("Record Deleted");
+      
     }
 
-};
-struct tagLifeInsurance
-{
-    unsigned int lnCount;
-    float lfPolicyCoverage[5];
-    tagLifeInsurance(){
-        lnCount=0;
-        lfPolicyCoverage[5]={0};
+    void DisplayARecord()
+    {
+        // search by account number
+        // display all details
+        // completed
+        long nAccountNo;
+        cout << "Enter Account Number to display: ";
+        cin >> nAccountNo;
+        if (nAccountNo > vecRecord.size() || nAccountNo <= 0)
+        {
+            cout << "Invalid Account Number";
+            return;
+        }
+        vecRecord[nAccountNo - 1]->DisplayRecord();
     }
-    void Create(){
-        // not taking count input
-        string count;
+    void DisplayAllRecords()
+    {
+        // iterate on vector
+        // call display function
+        for (auto it = vecRecord.begin(); it != vecRecord.end(); it++)
+        {
+            if (((*it)->nServiceFlag & DELETED) == DELETED)
+                continue;
+            (*it)->DisplayRecord();
+        }
+    }
+
+    // File Handling
+    void ReadRecordsFromBinary()
+    {
+        // read from file
+        // iterate on file
+            // Create a record
+            // push data to vector
+            // push data to map
+        // completed
+
+        fstream inFile;
+        string strFileName;
         do{
-            cout << "\nPlease Enter the Number of Policies: ";
-        cin >> count;
+            puts("Enter valid file name:");
+            cin>>strFileName;
         }
-        while(!(isValidAmount(count)&&stoi(count)<=5&&stoi(count)>0));
+        while(!IsValidName(strFileName));
         
-        lnCount=stoi(count);
-        for(int i=0;i<lnCount;i++){
-            string strAmount;
-            do{
-                 cout << "\nPlease Enter the Policy Coverage: ";
-             cin >> strAmount;
-            }
-            while(isValidAmount(strAmount)==false);
-            lfPolicyCoverage[i]=stof(strAmount);
+        try{
+            strFileName+=".bin";
+            inFile.open(strFileName, ios::binary | ios::in);
         }
-    }
-    void Display(){
-        cout << "\nLife Insurance Policy Coverage: ("<<lnCount<<")"<<endl;
-        for(int i=0;i<lnCount;i++){
-            cout << lfPolicyCoverage[i] <<"  ";
+        catch(exception e){
+            puts("File not found");
+            puts("Importing default bank.bin file");
+             inFile.open("bank.bin", ios::binary | ios::in);
         }
-    }
-    void Modify(){
-        Create();
-    }
-    
-};
-struct tagLocker {
-
-    void Create(){
+        
+        if (!inFile)
+        {
+            cout << "bank.bin File not found";
+            return;
+        }
+        else
+        {
+            
+            puts("File found");
+            tagRecord *ptrtagRecord = new tagRecord;
+            while (inFile.read(reinterpret_cast<char *>(ptrtagRecord), sizeof(tagRecord) -sizeof(ptrtagRecord->mapService)))
+            {
+                ptrtagRecord->SetAccountNo(vecRecord.size() + 1) ;
+                ptrtagRecord->ReadServiceData(inFile);
                 
-                }
-           
-                void Display(){
-                    cout << "\nLocker: ";
-                }
-                void Modify(){
-puts("Locker Modified ");
-
-                }
-        };
-
-
-struct tagMedicalInsurance
-{
-    float lfCoverage;
-    tagMedicalInsurance(){
-        lfCoverage=0;
-    }
-    void Create(){
-        string strAmount;
-        do{
-             cout << "\nPlease Enter the Coverage: ";
-         cin >> strAmount;
-        }
-        while(isValidAmount(strAmount)==false);
-        lfCoverage=stof(strAmount);
-    }
-    void Display(){
-        cout << "\nMedical Insurance Coverage: " << lfCoverage;
-    }
-    void Modify(){
-        string strAmount;
-        do{
-             cout << "\nPlease Enter the Coverage: ";
-         cin >> strAmount;
-        }
-        while(isValidAmount(strAmount)==false);
-        lfCoverage=stof(strAmount);
-        
-    }
-};
-struct tagMutualFund
-{
-   
-    float lfInvestmentAmount;
-    tagMutualFund(){
-        lfInvestmentAmount=0.0;
-    }
-    void Create(){
-        string strAmount;
-        do{
-             cout << "\nPlease Enter the Investment Amount: ";
-         cin >> strAmount;
-        }
-        while(isValidAmount(strAmount)==false);
-        lfInvestmentAmount=stof(strAmount);
-    }
-    void Display(){
-        cout << "\nMutual Fund Investment Amount: " << lfInvestmentAmount;
-    }
-    void Modify(){
-        string strAmount;
-        do{
-             cout << "\nPlease Enter the Investment Amount: ";
-         cin >> strAmount;
-        }
-        while(isValidAmount(strAmount)==false);
-        lfInvestmentAmount=stof(strAmount);
-    }
-};
-  struct tagNomination
-{
-    unsigned int lnCount;
-    char lcName[3][24+1]={"","",""};
-    tagNomination(){
-        lnCount=0;
-        
-    }
-    void Create(){
-        string strName;
-        cout << "\nPlease Enter the Number of Nominees: ";
-       do{
-         cin >> lnCount;
-       }
-       while(lnCount<1 || lnCount>3);
-        for(int i=0;i<lnCount;i++){
-            do{
-                cout << "\nPlease Enter the Name of Nominee " << i+1 << ": ";
-                getline(cin,strName);
-                
+                vecRecord.push_back(ptrtagRecord);
+                mapRecord[atoll(ptrtagRecord->GetMobile().c_str())] = ptrtagRecord;
+                ptrtagRecord = new tagRecord;
             }
-            while(IsValidName(strName)==false);
-            strcpy_s(lcName[i],strName.c_str());
+
+             delete( ptrtagRecord); 
         }
     }
-    void Display(){
-        for(int i=0;i<lnCount;i++){
-cout << "\nNominee Name: " << lcName[i];
-        }
-    }
-    void Modify(){
-        string strName;
-        cout << "\nPlease Enter the Number of Nominees: ";
-        cin >> lnCount;
-        for(int i=0;i<lnCount;i++){
-            do{
-                cout << "\nPlease Enter the Name of Nominee " << i+1 << ": ";
-                getline(cin,strName);
+    void WriteRecordsToBinary()
+    {
+        // memory delete karna mat bhulna
+        
+        fstream outFile;
+        outFile.open("bank.bin", ios::out | ios::binary);
+        long SIZE = vecRecord.size();
+        for (int lnCounter = 0; lnCounter < SIZE; lnCounter++)
+        {
+            outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]), sizeof(tagRecord) - 48);
+            for(auto &it:(vecRecord[lnCounter]->mapService)){
+                if ((vecRecord[lnCounter]->nServiceFlag) & (it.first))
+                {
+                    outFile.write(reinterpret_cast<char *>(it.second), mapServiceSize[it.first]);
+                }
             }
-            while(IsValidName(strName)==false);
-            strcpy_s(lcName[i],strName.c_str());
+            // if ((vecRecord[lnCounter]->nServiceFlag & SAVINGS_ACCOUNT) == SAVINGS_ACCOUNT)
+            // {
+            //     outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[SAVINGS_ACCOUNT]), sizeof(tagSavingAccount));
+            // }
+            // if ((vecRecord[lnCounter]->nServiceFlag & CURRENT_ACCOUNT) == CURRENT_ACCOUNT)
+            // {
+            //     outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[CURRENT_ACCOUNT]), sizeof(tagCurrentAccount));
+            // }
+            // if ((vecRecord[lnCounter]->nServiceFlag & FIXED_DEPOSIT) == FIXED_DEPOSIT)
+            // {
+            //     outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[FIXED_DEPOSIT]), sizeof(tagFixedDeposit));
+            // }
+            // if ((vecRecord[lnCounter]->nServiceFlag & MEDICAL_INSURANCE) == MEDICAL_INSURANCE)
+            // {
+            //     outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[MEDICAL_INSURANCE]), sizeof(tagMedicalInsurance));
+            // }
+            // if ((vecRecord[lnCounter]->nServiceFlag & MUTUAL_FUND) == MUTUAL_FUND)
+            // {
+            //     outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[MUTUAL_FUND]), sizeof(tagMutualFund));
+            // }
+            // if ((vecRecord[lnCounter]->nServiceFlag & DEMAT) == DEMAT)
+            // {
+            //     outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[DEMAT]), sizeof(tagDemat));
+            // }
+            // if ((vecRecord[lnCounter]->nServiceFlag & ESTATEMENT) == ESTATEMENT)
+            // {
+            //     outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[ESTATEMENT]), sizeof(tagEStatement));
+            // }
+            // if ((vecRecord[lnCounter]->nServiceFlag & PASSBOOK) == PASSBOOK)
+            // {
+            //     outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[PASSBOOK]), sizeof(tagPassbook));
+            // }
+            // if ((vecRecord[lnCounter]->nServiceFlag & LOCKER) == LOCKER)
+            // {
+            //     outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[LOCKER]), sizeof(tagLocker));
+            // }
+            // if ((vecRecord[lnCounter]->nServiceFlag & NOMINATION) == NOMINATION)
+            // {
+            //     outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[NOMINATION]), sizeof(tagNomination));
+            // }
+            // if ((vecRecord[lnCounter]->nServiceFlag & LIFE_INSURANCE) == LIFE_INSURANCE)
+            // {
+            //     outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[LIFE_INSURANCE]), sizeof(tagLifeInsurance));
+            // }
+
+            
+            // Free memory used by services
+            for (auto &it : vecRecord[lnCounter]->mapService)
+            {
+                free(it.second);
+            }
+            // delete is faster than free , when datatype of pointer is known use delete
+           delete(vecRecord[lnCounter]);
         }
+
+        outFile.close();
+
+        // completed
+    }
+    
+    // Import and Export
+    void ImportRecords()
+    {
+        // todo
+    }
+    void ExportRecords()
+    {
+        // Read all binary
+        fstream lFStarBank;
+        lFStarBank.open("bank.bin", ios::in | ios::binary);
+        fstream lExportFile;
+        // create csv file
+        remove("export.csv");
+        lExportFile.open("export.csv", ios::out | ios::trunc);
+        
+        // loop through all records
+        lExportFile << "Account Number,First Name,Last Name,City,Mobile,Email,Saving Account Balance,Current Account Balance,Fixed Deposit count,Fixed Deposit Amount,Mutual Fund Amount,Demat,Nomination count,n1,n2,n3,Life Insurance count,Insurance policy coverage" << endl;
+        lExportFile << endl;
+        for (int lnCounter = 0; lnCounter < vecRecord.size(); lnCounter++)
+        {
+            // read record
+            // write to csv
+            vecRecord[lnCounter]->ExportRecord(lExportFile);
+            lExportFile << endl;
+        }
+        // save csv
+        lFStarBank.close();
+        lExportFile.close();
     }
 };
 
-struct tagRecord{
-    tagRecord(){
-        nAccountNo=0;
-        sFirstName[0]='\0';
-        sLastName[0]='\0';
-        sCity[0]='\0';
-        sMobile[0]='\0';
-        sEmailId[0]='\0';
-        nServiceFlag=0;
-
-    }
-
-    private:
-    long nAccountNo=0;
-    char sFirstName[24+1]="";
-    char sLastName[24+1]="";
-    char sCity[24+1]="";
-    char sMobile[10+1]="";// or  long long nMobile;
-    char sEmailId[40+1]="";
+void ReleaseMode()
+{
     
-    // bool bService[11];// 11 bytes=> 88 bits
-    // instead use single short int (0000 0000 0000 0000) 
-    // STORE BIT WISE // 16 bits
-    // 1st bit for 1st service
-    // 2nd bit for 2nd service....
-    
-    public:
-    short int nServiceFlag=0;
-    map<unsigned short int ,void *>mapService;
-    void CreateRecord(){
-    string lstrTemp;
-    nServiceFlag+=ACTIVE;
-    cout << "\n\nEnter the First Name of the Account holder : ";
-    cin >> lstrTemp;
-    while (!IsValidName(lstrTemp))
-    {
-        cout << "Name should have alphabets only and length in range 2-20.";
-        cout << "\nFirst Name: ";
-        cin >> lstrTemp;
+    puts("Enter no. of accounts to be reserved");
+    int lnNoOfAccounts;
+    cin >> lnNoOfAccounts;
 
-    }
-   strcpy_s(sFirstName,lstrTemp.c_str());
+    CMain app;
+    // Reserve memory for records
+    app.vecRecord.reserve(lnNoOfAccounts);
+    app.ReadRecordsFromBinary();
 
-
-    cout << "\nEnter the Last Name of the Account holder : ";
-    cin >> lstrTemp;
-    while (!IsValidName(lstrTemp))
-    {
-        cout << "Name should have alphabets only and length in range 2-20.";
-        cout << "\nLast Name: ";
-        cin >> lstrTemp;
-    }
-    strcpy_s(sLastName,lstrTemp.c_str());
-    
-
-
-    
-    cout << "\nEnter Your City Name: ";
-    cin >>lstrTemp;
-     cin.clear();
-    //    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-
-    while (!IsValidName(lstrTemp))
-    {
-        cout << "Plase enter a valid City Name: ";
-        cin >> lstrTemp;
-         cin.clear();
-    //    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-    }
-    strcpy_s(sCity,lstrTemp.c_str());
-   
-
-    cout << "\nEnter Your Mobile Number : ";
-    cin >> lstrTemp;
-    cin.clear();
-    //    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-    while (!IsValidMobileNumber(lstrTemp))
-    {
-        cout << "Please enter a valid mobile number: ";
-        cin >> lstrTemp;
-         cin.clear();
-    //    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-    }
-    strcpy_s(sMobile,lstrTemp.c_str());
-
-    cout << "\nEnter Your Email: ";
-    cin >>lstrTemp;
- cin.clear();
-    //    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-    while (!IsValidEmail(lstrTemp))
-    {
-        cout << "Enter a valid email: ";
-
-        cin >> lstrTemp;
-    }
-    strcpy_s(sEmailId,lstrTemp.c_str());
-    cout << "\n\nCongratulations! Your Account is Successfully Created!!";
-
-
+    int lcChoice; // updated by kunal to int for more options in menu
 
     do
     {
-        cout << "\n\nPlease choose suitable option for addtional services.";
-cout<<"\n1.Saving Account";
-cout<<"\n2.Current Account";
 
-        cout << "\n3.Locker Facility";
-        cout << "\n4.Passbook";
-        cout << "\n5.eStatement";
-        cout << "\n6.Fixed Deposit";
-        cout << "\n7.Medical Insurance";
-        cout << "\n8.Life Insurance";
-        cout << "\n9.Nomination";
-        cout << "\n10.Mutual Fund";
-        cout << "\n11.Add Demat Account";
-        cout << "\n19.EXIT";
-        cout << "\nYour Choice: ";
-        cin >> lstrTemp;
-        cin.clear();
-      if(lstrTemp=="1"){
-           cout << "\nDo you want to avail Saving Account? (Y/N): ";
-            while (true)
-            {
-             
-                cin >>lstrTemp;
-                if (lstrTemp[0] == 'Y' || lstrTemp[0]== 'y' )
-                {
-                    
-                    tagSavingAccount*ptr=new tagSavingAccount;
-                    ptr->Create();
-                    ptr->Display();
-                   
-                    mapService[SAVINGS_ACCOUNT]=ptr;
-                    if(!(nServiceFlag & SAVINGS_ACCOUNT)){
-                         nServiceFlag+=SAVINGS_ACCOUNT;
-                    }
-                    cout << "\nYour request for saving account has been approved.";
-                    break;
-                }
-                 if(lstrTemp[0] == 'N' || lstrTemp[0] == 'n')
-                {
-                    break;
-                }
-                cout << "\nPlease enter Y/N only";
-            }
-      }
-      else if(lstrTemp=="2"){
-                        cout << "\nDo you want to avail Current Account? (Y/N): ";
-            while (true)
-            {
+        app.menu();
 
-                cin >>lstrTemp;
-                if (lstrTemp[0] == 'Y' || lstrTemp[0] == 'y' )
-                {
-                    tagCurrentAccount*ptr=new tagCurrentAccount;
-                    ptr->Create();
-                    ptr->Display();
-                    mapService[CURRENT_ACCOUNT]=ptr;
-            if(!(nServiceFlag & CURRENT_ACCOUNT)){
-                         nServiceFlag+=CURRENT_ACCOUNT;
-                    }
-                    cout << "\nYour request for current account has been approved.";
-                    break;
-                }
-                 if(lstrTemp[0] == 'N' || lstrTemp[0] == 'n')
-                {
-                    break;
-                }
-                cout << "\nPlease enter Y/N only";
-            }
-      }
-        else if(lstrTemp=="3"){
-            cout << "\nDo you want to avail Locker facility? (Y/N): ";
-            while (true)
-            {
-                
-                cin >>lstrTemp;
-               cin.clear();
-    //    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin >> lcChoice;
 
-
-                if (lstrTemp[0] == 'Y' || lstrTemp[0] == 'y' )
-                {
-                    tagLocker*ptr=new tagLocker;
-                    ptr->Create();
-                    ptr->Display();
-                    mapService[LOCKER]=ptr;
-                   if(!(nServiceFlag & LOCKER)){
-                         nServiceFlag+=LOCKER;
-                    }
-                    cout << "\nYour request for locker facility has been approved.";
-                    break;
-                }
-                 if(lstrTemp[0] == 'N' || lstrTemp[0] == 'n')
-                {
-                    break;
-                }
-                cout << "\nPlease enter Y/N only";
-            }
-        }
-
-        else if(lstrTemp=="4"){
-            cout << "\nDo you want to avail Passbook facility? (Y/N): ";
-            while (true)
-            {
-                
-                cin >> lstrTemp;
-                if(lstrTemp[0] == 'Y' ||lstrTemp[0] == 'y' )
-                {
-                    tagPassbook *ptr=new tagPassbook;
-
-                    ptr->Create();
-                    ptr->Display();
-                    mapService[PASSBOOK]=ptr;
-                   if(!(nServiceFlag & PASSBOOK)){
-                         nServiceFlag+=PASSBOOK;
-                    }
-                    cout << "\nYour request for passbook facility has been approved.";
-                    break;
-                }
-                 if(lstrTemp[0] == 'N' || lstrTemp[0] == 'n')
-                {
-                    break;
-                }
-                cin.clear();
-                cout<<"\nPlease enter Y/N only";
-
-        }}
-        else if(lstrTemp=="5"){
-             cout << "\nDo you want to avail eStatement facility? (Y/N): ";
-            while (true)
-            {
-               
-                cin >> lstrTemp;
-                if (lstrTemp[0] == 'Y' || lstrTemp[0] == 'y' )
-                {
-                    tagEStatement *ptr=new tagEStatement;
-                    ptr->Create();
-                    ptr->Display();
-                    mapService[ESTATEMENT]=ptr;
-                  if(!(nServiceFlag & ESTATEMENT)){
-                         nServiceFlag+=ESTATEMENT;
-                    }
-                    cout << "\nYour request for eStatement has been approved.\nYour account statement will be emailed to you soon.";
-                    break;
-                }
-                 if(lstrTemp[0] == 'N' || lstrTemp[0] == 'n')
-                {
-                    break;
-                }
-                cout << "\nPlease enter Y/N only";
-            }
-        }
-        else if(lstrTemp=="6"){
-            cout << "\nDo you want to avail Fixed Deposit facility? (Y/N): ";
-             while (true)
-            {
-                
-                cin >> lstrTemp;
-
-                if (lstrTemp[0] == 'Y' || lstrTemp[0] == 'y' || lstrTemp[0]== 'N' || lstrTemp[0] == 'n')
-                {
-                    tagFixedDeposit*ptr=new tagFixedDeposit;
-                    ptr->Create();
-                    ptr->Display();
-                    mapService[FIXED_DEPOSIT]=ptr;
-                  if(!(nServiceFlag & FIXED_DEPOSIT)){
-                         nServiceFlag+=FIXED_DEPOSIT;
-                    }
-                    break;
-                }
-                 if(lstrTemp[0] == 'N' || lstrTemp[0] == 'n')
-                {
-                    break;
-                }
-                cout << "\nPlease enter Y/N only";
-            }
-        }
-        else if(lstrTemp=="7"){
-              cout << "\nDo you want to avail Medical Insurance? (Y/N): ";
-              while(true){                cin >> lstrTemp;
-                if (lstrTemp[0] == 'Y' || lstrTemp[0] == 'y' )
-                {
-                   cout << "\nPlease Enter Medical Insurance Coverage Plan Amount";
-          tagMedicalInsurance*ptr=new tagMedicalInsurance;
-                    ptr->Create();
-                    ptr->Display();
-                    mapService[MEDICAL_INSURANCE]=ptr;
-                   if(!(nServiceFlag & MEDICAL_INSURANCE)){
-                         nServiceFlag+=MEDICAL_INSURANCE;
-                    }
-                   
-            cout << "\nTransaction successful. Your request is approved!";
-           \
-                    break;
-                }
-                 if(lstrTemp[0] == 'N' || lstrTemp[0] == 'n')
-                {
-                    break;
-                }
-                 cout << "\nPlease enter Y/N only";
-              }
-            
-        }
-
-        else if(lstrTemp=="8"){
-      
-              cout<<"\nDo you want to avail Life Insurance? (Y/N): ";
-              while(true){
-                cin >> lstrTemp;
-                if (lstrTemp[0] == 'Y' || lstrTemp[0] == 'y')
-                {
-                   tagLifeInsurance*ptr=new tagLifeInsurance;
-                    ptr->Create();
-                    ptr->Display();
-                    mapService[LIFE_INSURANCE]=ptr;
-                   if(!(nServiceFlag & LIFE_INSURANCE)){
-                         nServiceFlag+=LIFE_INSURANCE;
-                    }
-                    break;
-
-          
-                }
-                    if(lstrTemp[0] == 'N' || lstrTemp[0] == 'n')
-                    {
-                        break;
-                    }
-                    cout << "\nPlease enter Y/N only";
-        }
-        }
-        else if(lstrTemp=="9"){
-            cout<<"\nDo you want to avail Nomination? (Y/N): ";
-            while(true){
-                cin >> lstrTemp;
-                if (lstrTemp[0] == 'Y' || lstrTemp[0] == 'y' )
-                {
-            tagNomination*ptr=new tagNomination;
-                    ptr->Create();
-                    ptr->Display();
-            mapService[NOMINATION]=ptr;
-            if(!(nServiceFlag & NOMINATION)){
-                         nServiceFlag+=NOMINATION;
-                    }
+        switch (lcChoice)
+        {
+        case 1:
+            app.AddRecord();
+            break;
+        case 2:
+            app.ModifyARecord();
+            break;
+        case 3:
+            app.DeleteARecord();
+            break;
+        case 4:
+            app.DisplayARecord();
+            break;
+        case 5:
+            app.DisplayAllRecords();
+            break;
+        case 6:
+            app.ImportRecords();
+            break;
+        case 7:
+            app.ExportRecords();
             break;
 
-            }
-            if(lstrTemp[0] == 'N' || lstrTemp[0] == 'n')
-            {
-                break;
-            }
-            cout << "\nPlease enter Y/N only";
-            }
+        case 19:
+            app.WriteRecordsToBinary();
+            cout << "\n\nThanks for using our Services.\nHave a nice day!";
+            break;
+
+        default:
+            cout << "Invalid Option";
+            break;
         }
 
-        else if(lstrTemp=="10"){
-           cout<<"\nDo you want to avail Mutual Fund? (Y/N): ";
-           while(true){
-                cin >> lstrTemp;
-                if (lstrTemp[0] == 'Y' || lstrTemp[0] == 'y' )
-                {
-                    tagMutualFund*ptr=new tagMutualFund;
-                    ptr->Create();
-                    ptr->Display();
-                    mapService[MUTUAL_FUND]=ptr;
-                   if(!(nServiceFlag & MUTUAL_FUND)){
-                         nServiceFlag+=MUTUAL_FUND;
-                    }
-                    break;
-                }
-                if(lstrTemp[0] == 'N' || lstrTemp[0] == 'n')
-                {
-                    break;
-                }
-                cout << "\nPlease enter Y/N only";
-        }
-        }
-        else if(lstrTemp=="11"){
-           cout<<"\nDo you want to avail Demat Account? (Y/N): ";
-              while(true){
-                  cin >> lstrTemp;
-                if (lstrTemp[0] == 'Y' || lstrTemp[0] == 'y' || lstrTemp[0]== 'N' || lstrTemp[0] == 'n')
-                {
-                    tagDemat*ptr=new tagDemat;
-                    ptr->Create();
-                    ptr->Display();
-                    mapService[DEMAT]=ptr;
-                   if(!(nServiceFlag & DEMAT)){
-                         nServiceFlag+=DEMAT;
-                    }
-                    break;
-                } if(lstrTemp[0] == 'N' || lstrTemp[0] == 'n')
-                {
-                    break;
-                }
-                cout << "\nPlease enter Y/N only";
-              }
-
-            }
-    
-    else if (lstrTemp=="19")
-    {
-        cout<<"\nThank You for using our services. Have a nice day!";
-    break;
-    }
-    else{
-        cout<<"\nInvalid Choice. Please try again.";
-    }
-    }while(lstrTemp!="19");
-    
-    }
-
-    string GetMobile(){
-        return sMobile;
-    }
-    void SetAccountNo(long n){
-        this->nAccountNo=n;
-    }
-    void ModifyRecord(){
-        string lstrTemp;
-      
-
-      while(true){
-        cout << "\nPlease enter the field you want to modify: ";
-        cout << "\n1. First Name";
-        cout << "\n2. Last Name";
-        cout << "\n3. City";
-        cout << "\n4. Mobile Number";
-        cout << "\n5. Email";
-        cout << "\n6. Services";
-        cout << "\n7. Exit";
-          cin >> lstrTemp;
-        if(lstrTemp=="1"){
-            do{
-                 cout << "\nPlease enter the new First Name: ";
-                cin>>lstrTemp;
-
-            }
-            while(IsValidName(lstrTemp)==false);
-           
-            strcpy_s(sFirstName,lstrTemp.c_str());
-            
-        }
-        else if(lstrTemp=="2"){
-            do{
-                cout << "\nPlease enter the new Last Name: ";
-                cin>>lstrTemp;
-
-            }
-            while(IsValidName(lstrTemp)==false);
-           
-
-            strcpy_s(sLastName,lstrTemp.c_str());
-        }
-        else if(lstrTemp=="3"){
-           do{
-                 cout << "\nPlease enter the new City Name: ";
-                cin>>lstrTemp;
-
-            }
-            while(IsValidName(lstrTemp)==false);
-           
-            strcpy_s(sCity,lstrTemp.c_str());
-        }
-        else if(lstrTemp=="4"){
-           do{
-                 cout << "\nPlease enter the new Mobile number: ";
-                cin>>lstrTemp;
-
-            }
-            while(IsValidMobileNumber(lstrTemp)==false);
-           
-            strcpy_s(sMobile,lstrTemp.c_str());
-        }
-        else if(lstrTemp=="5"){
-          do{
-                 cout << "\nPlease enter the new Last Name: ";
-                cin>>lstrTemp;
-
-            }
-            while(IsValidEmail(lstrTemp)==false);
-           
-            strcpy_s(sLastName,lstrTemp.c_str());
-        }
-        else if(lstrTemp=="6"){
-            puts("\n//////////////////Modify Services//////////////////");
-            cout << "\nPlease enter the service you want to modify: ";
-            cout << "\n1. Savings Account";
-            cout << "\n2. Current Account";
-            cout << "\n3. Fixed Deposit";
-            cout << "\n4. Demat";
-            cout << "\n5. Mutual Fund";
-            cout << "\n6. Nomination";
-            cout << "\n7. Life Insurance";
-            cout << "\n8. Exit";
-            while(true){
-                cin >> lstrTemp;
-                if(lstrTemp=="1"){
-                    if((nServiceFlag&SAVINGS_ACCOUNT)==SAVINGS_ACCOUNT){
-                        cout << "\nSavings Account is already availed. Do you want to modify it? (Y/N): ";
-                        while(true){
-                            cin >> lstrTemp;
-                            if(lstrTemp[0]=='Y' || lstrTemp[0]=='y'){
-                                ((tagSavingAccount*)(mapService[SAVINGS_ACCOUNT]))->Modify();
-                                
-                                break;
-                            }
-                            else if(lstrTemp[0]=='N' || lstrTemp[0]=='n'){
-                                break;
-                            }
-                            else{
-                                cout << "\nPlease enter Y/N only";
-                            }
-                        }
-                    }
-                    else{
-                        cout << "\nDo you want to avail Savings Account? (Y/N): ";
-                        while(true){
-                            cin >> lstrTemp;
-                            if(lstrTemp[0]=='Y' || lstrTemp[0]=='y'){
-                                ((tagCurrentAccount*)(mapService[CURRENT_ACCOUNT]))->Modify();
-                                break;
-                            }
-                            else if(lstrTemp[0]=='N' || lstrTemp[0]=='n'){
-                                break;
-                            }
-                            else{
-                                cout << "\nPlease enter Y/N only";
-                            }
-                        }
-                    }
-                }
-                else if(lstrTemp=="2"){
-                    if((nServiceFlag&CURRENT_ACCOUNT)==CURRENT_ACCOUNT){
-                        cout << "\nCurrent Account is already availed. Do you want to modify it? (Y/N): ";
-                        while(true){
-                            cin >> lstrTemp;
-                            if(lstrTemp[0]=='Y' || lstrTemp[0]=='y'){
-                                tagCurrentAccount*ptr=(tagCurrentAccount*)mapService[CURRENT_ACCOUNT];
-                                ptr->Modify();
-                                break;
-                            }
-                            else if(lstrTemp[0]=='N' || lstrTemp[0]=='n'){
-                                break;
-                            }
-                            else{
-                                cout << "\nPlease enter Y/N only";
-                            }
-                        }
-                    }
-        
-        }
-        else if(lstrTemp=="3"){
-
-        }
-        else if(lstrTemp=="4"){
-
-        }
-        else if(lstrTemp=="5"){
-
-        }
-        else if(lstrTemp=="6"){
-
-        }
-       
-        else if(lstrTemp=="7"){
-            return;
-        }
-        else{
-            cout << "\nInvalid Choice. Please try again.";
-        }
-
-    }
-        }
-      else if(lstrTemp=="7"){
-          return;
-        }
-        else{
-            cout << "\nInvalid Choice. Please try again.";
-        }
-      }
-    }
-    // void ModifyFirstName(){
-        
-    // }
-    // void ModifyLastName(){
-
-    // }
-    // void ModifyCity(){
-
-    // }
-    // void ModifyMobile(){
-
-    // }
-    // void ModifyEmail(){
-
-    // }
-    
-    void DisplayRecord(){
-        puts("\n//////////////////Account Details//////////////////");
-        
-        cout << "\nAccount Number: " <<nAccountNo;
-        cout << "\nFirst Name: " <<sFirstName;
-        cout << "\nLast Name: " <<sLastName;
-        cout << "\nCity: " <<sCity; 
-        cout << "\nMobile Number: " <<sMobile;
-        cout << "\nEmail: " <<sEmailId;
-        if((nServiceFlag&SAVINGS_ACCOUNT)==SAVINGS_ACCOUNT)
-        {
-            
-            cout << "\nService Type: Savings Account";
-           ((tagSavingAccount*)mapService[SAVINGS_ACCOUNT])->Display();
-        }
-         if((nServiceFlag&CURRENT_ACCOUNT)==CURRENT_ACCOUNT)
-        {
-              cout << "\nService Type: Current Account";
-           ((tagSavingAccount*)mapService[CURRENT_ACCOUNT])->Display();
-        }
-  
-          
-            if((nServiceFlag&LOCKER)==LOCKER)
-            {
-                cout << "\nService Type: Locker";
-                ((tagLocker*)mapService[LOCKER])->Display();
-            }
-                if((nServiceFlag&PASSBOOK)==PASSBOOK)
-            {
-                cout << "\nService Type: Passbook";
-                ((tagPassbook*)mapService[PASSBOOK])->Display();
-            }
-        
-if((nServiceFlag&MEDICAL_INSURANCE)==MEDICAL_INSURANCE)
-            {
-                cout << "\nService Type: Medical Insurance";
-                ((tagMedicalInsurance*)mapService[MEDICAL_INSURANCE])->Display();
-            }
-            if((nServiceFlag&LIFE_INSURANCE)==LIFE_INSURANCE)
-            {
-                cout << "\nService Type: Life Insurance";
-                ((tagLifeInsurance*)mapService[LIFE_INSURANCE])->Display();
-            }
-if((nServiceFlag&MUTUAL_FUND)==MUTUAL_FUND)
-            {
-                cout << "\nService Type: Mutual Fund";
-                ((tagMutualFund*)mapService[MUTUAL_FUND])->Display();
-            }
-            if((nServiceFlag&FIXED_DEPOSIT)==FIXED_DEPOSIT)
-        {
-            cout << "\nService Type: Fixed Deposit";
-            ((tagFixedDeposit*)mapService[FIXED_DEPOSIT])->Display();
-        }
-            if((nServiceFlag&DEMAT)==DEMAT)
-            {
-                cout << "\nDemat Account No.: ";
-                ((tagDemat*)mapService[DEMAT])->Display();
-
-            }
-             if((nServiceFlag&NOMINATION)==NOMINATION)
-            {
-                cout << "\nService Type: Nominee";
-                ((tagNomination*)mapService[NOMINATION])->Display();
-            }
-            if((nServiceFlag&ESTATEMENT)==ESTATEMENT)
-            {
-                cout << "\nService Type: E-Statement";
-                ((tagEStatement*)mapService[ESTATEMENT])->Display();
-            }
-              if((nServiceFlag&ACTIVE)==ACTIVE)
-            {
-                cout << "\nType:[Active]";
-                
-            }
-            if((nServiceFlag&DELETED)==DELETED)
-            {
-                cout << "\n Type: [Deleted]";
-               
-            }
-  
-           
-            
-            
-            
-       
-        
-    }
-    void CloseRecord()
-    {
-        if(!(nServiceFlag&DELETED))
-            nServiceFlag+=DELETED;
-
-    }
-    void Deposit(){
-
-    }
-    void Withdraw(){
-
-    }
-    long  GetAccountNumber(){
-        return nAccountNo;
-    }
-    void GetAccountBalance(){
-         
-    }
-    void GetAccountStatus(){
-
-    }
-    static void SetLastAccountNumber(long m_nAccountNumber){
-
-    }
-    // more can be added later
-    // validators
-    void ReadServiceData(fstream &inFile){
-        int nService=nServiceFlag;
-        
-        if((nServiceFlag&SAVINGS_ACCOUNT)==SAVINGS_ACCOUNT)
-        {
-            tagSavingAccount*ptr=new tagSavingAccount;
-        inFile.read((char*)ptr,sizeof(tagSavingAccount));
-            mapService[SAVINGS_ACCOUNT]=ptr;
-        }
-        if((nServiceFlag&CURRENT_ACCOUNT)==CURRENT_ACCOUNT)
-        {
-            tagCurrentAccount*ptr=new tagCurrentAccount;
-            inFile.read((char*)ptr,sizeof(tagCurrentAccount));
-            mapService[CURRENT_ACCOUNT]=ptr;
-        }
-        if((nServiceFlag&FIXED_DEPOSIT)==FIXED_DEPOSIT)
-        {
-            tagFixedDeposit*ptr=new tagFixedDeposit;
-            inFile.read((char*)ptr,sizeof(tagFixedDeposit));
-            mapService[FIXED_DEPOSIT]=ptr;
-        }
-        if((nServiceFlag&MEDICAL_INSURANCE)==MEDICAL_INSURANCE)
-        {
-            tagMedicalInsurance*ptr=new tagMedicalInsurance;
-            inFile.read((char*)ptr,sizeof(tagMedicalInsurance));
-            mapService[MEDICAL_INSURANCE]=ptr;
-        }
-        if((nServiceFlag&MUTUAL_FUND)==MUTUAL_FUND)
-        {
-            tagMutualFund*ptr=new tagMutualFund;
-            inFile.read((char*)ptr,sizeof(tagMutualFund));
-            mapService[MUTUAL_FUND]=ptr;
-        }
-
-        if((nServiceFlag&DEMAT)==DEMAT)
-        {
-            tagDemat*ptr=new tagDemat;
-            inFile.read((char*)ptr,sizeof(tagDemat));
-            mapService[DEMAT]=ptr;
-        }
-        if((nServiceFlag&ESTATEMENT)==ESTATEMENT)
-        {
-            tagEStatement*ptr=new tagEStatement;
-            inFile.read((char*)ptr,sizeof(tagEStatement));
-            mapService[ESTATEMENT]=ptr;
-        }
-       if((nServiceFlag&PASSBOOK)==PASSBOOK)
-        {
-            tagPassbook*ptr=new tagPassbook;
-            inFile.read((char*)ptr,sizeof(tagPassbook));
-            mapService[PASSBOOK]=ptr;
-        }
-        if((nServiceFlag&LOCKER)==LOCKER)
-        {
-            tagLocker*ptr=new tagLocker;
-            inFile.read((char*)ptr,sizeof(tagLocker));
-            mapService[LOCKER]=ptr;
-        }
-        if((nServiceFlag&NOMINATION)==NOMINATION)
-        {
-            tagNomination*ptr=new tagNomination;
-            inFile.read((char*)ptr,sizeof(tagNomination));
-            mapService[NOMINATION]=ptr;
-        }
-        if((nServiceFlag&LIFE_INSURANCE)==LIFE_INSURANCE)
-        {
-            tagLifeInsurance*ptr=new tagLifeInsurance;
-            inFile.read((char*)ptr,sizeof(tagLifeInsurance));
-            mapService[LIFE_INSURANCE]=ptr;
-        }
-    }
-    void ExportRecord(fstream &lExportFile){
-        lExportFile<<nAccountNo<<",";
-        lExportFile<<sFirstName<<",";
-        lExportFile<<sLastName<<",";
-        lExportFile<<sCity<<",";
-        lExportFile<<sMobile<<",";
-        lExportFile<<sEmailId<<",";
-        lExportFile<<nServiceFlag<<",";
-        if((nServiceFlag&SAVINGS_ACCOUNT)==SAVINGS_ACCOUNT)
-        {
-            tagSavingAccount*ptr=(tagSavingAccount*)mapService[SAVINGS_ACCOUNT];
-            lExportFile<<ptr->lfBalance;
-        }
-        else{
-            lExportFile<<",";
-        }
-        if((nServiceFlag&CURRENT_ACCOUNT)==CURRENT_ACCOUNT)
-        {
-            tagCurrentAccount*ptr=(tagCurrentAccount*)mapService[CURRENT_ACCOUNT];
-            lExportFile<<ptr->lfBalance<<",";
-        }else{
-            lExportFile<<",";
-        }
-        if((nServiceFlag&FIXED_DEPOSIT)==FIXED_DEPOSIT)
-        {
-            tagFixedDeposit*ptr=(tagFixedDeposit*)mapService[FIXED_DEPOSIT];
-            lExportFile<<ptr->lnCount<<",";
-            lExportFile<<ptr->lfDepositAmount<<",";
-        }
-        else{
-            lExportFile<<", ,";
-        }
-        if((nServiceFlag&MUTUAL_FUND)==MUTUAL_FUND)
-        {
-            tagMutualFund*ptr=(tagMutualFund*)mapService[MUTUAL_FUND];
-            lExportFile<<ptr->lfInvestmentAmount<<",";
-        }
-        else{
-            lExportFile<<",";
-        }
-        if((nServiceFlag&MEDICAL_INSURANCE)==MEDICAL_INSURANCE)
-        {
-            tagMedicalInsurance*ptr=(tagMedicalInsurance*)mapService[MEDICAL_INSURANCE];
-            lExportFile<<ptr->lfCoverage<<",";
-        }
-        else{
-            lExportFile<<",";
-        }
-        if((nServiceFlag&DEMAT)==DEMAT)
-        {
-            tagDemat*ptr=(tagDemat*)mapService[DEMAT];
-            lExportFile<<ptr->lcNumber<<",";
-        }
-        else{
-            lExportFile<<",";
-        }
-        if((nServiceFlag&ESTATEMENT)==ESTATEMENT)
-        {
-            tagEStatement*ptr=(tagEStatement*)mapService[ESTATEMENT];
-          
-        }
-
-        if((nServiceFlag&PASSBOOK)==PASSBOOK)
-        {
-            tagPassbook*ptr=(tagPassbook*)mapService[PASSBOOK];
-          
-        }
-        if((nServiceFlag&LOCKER)==LOCKER)
-        {
-            tagLocker*ptr=(tagLocker*)mapService[LOCKER];
-            
-        }
-        if((nServiceFlag&NOMINATION)==NOMINATION)
-        {
-            tagNomination*ptr=(tagNomination*)mapService[NOMINATION];
-            lExportFile<<ptr->lnCount<<",";
-            for(int i=0;i<3;i++)
-            {
-                lExportFile<<ptr->lcName[i]<<" "<<ptr->lcName[i];
-                lExportFile<<",";
-
-            }
-        }
-        else{
-            lExportFile<<", , , ,";
-            
-        }
-        if((nServiceFlag&LIFE_INSURANCE)==LIFE_INSURANCE)
-        {
-            tagLifeInsurance*ptr=(tagLifeInsurance*)mapService[LIFE_INSURANCE];
-            lExportFile<<ptr->lnCount<<",";
-            lExportFile<<ptr->lfPolicyCoverage<<" ";
-        }else{
-            lExportFile<<",";
-        }
-    }
-};
-
-
+    } while (lcChoice != 19);
 }
+void TestMode()
+{
+}
+
+
+// Driver program
+int main()
+{
+    cout<<sizeof(tagPassbook)<<endl;
+mapServiceSize[SAVINGS_ACCOUNT]=sizeof(tagSavingAccount);
+mapServiceSize [CURRENT_ACCOUNT]=sizeof(tagCurrentAccount);
+mapServiceSize [LOCKER]=sizeof(tagLocker);
+mapServiceSize [PASSBOOK]=sizeof(tagPassbook);
+mapServiceSize [MEDICAL_INSURANCE]=sizeof(tagMedicalInsurance);
+mapServiceSize [LIFE_INSURANCE]=sizeof(tagLifeInsurance);
+mapServiceSize [MUTUAL_FUND]=sizeof(tagMutualFund);
+mapServiceSize [FIXED_DEPOSIT]=sizeof(tagFixedDeposit);
+mapServiceSize [DEMAT]=sizeof(tagDemat);
+mapServiceSize [NOMINATION]=sizeof(tagNomination);
+mapServiceSize [ESTATEMENT]=sizeof(tagEStatement);
+   ReleaseMode();
+
+    // cout<<sizeof(tagRecord)<<endl;// 184
+    return 0;
+}
+

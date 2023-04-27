@@ -62,6 +62,7 @@ public:
         string strChoice;
         cin >> strChoice;
         cin.clear();
+        // opt for search by account no.
         if (strChoice == "1")
         {
             string strAccountNo;
@@ -74,6 +75,7 @@ public:
             }
             vecRecord[stoi(strAccountNo) - 1]->ModifyRecord();
         }
+        // opt for search by mobile no.
         else if (strChoice == "2")
         {
             string strMobileNo;
@@ -94,22 +96,21 @@ public:
         WriteRecordsToBinary();
 
         // give option to modify any field
-
         // modify record from vector
-        // modify record from file
 
         // completed
     }
     void DeleteARecord()
     {
+        // delete record from vector
+        // completed
         long nAccountNo;
         cout << "Enter Account Number to delete: ";
         cin >> nAccountNo;
-        // delete record from vector
+        
         vecRecord[nAccountNo]->CloseRecord();
         puts("Record Deleted");
-        // delete record from file
-        // completed
+      
     }
 
     void DisplayARecord()
@@ -129,6 +130,8 @@ public:
     }
     void DisplayAllRecords()
     {
+        // iterate on vector
+        // call display function
         for (auto it = vecRecord.begin(); it != vecRecord.end(); it++)
         {
             if (((*it)->nServiceFlag & DELETED) == DELETED)
@@ -141,6 +144,11 @@ public:
     void ReadRecordsFromBinary()
     {
         // read from file
+        // iterate on file
+            // Create a record
+            // push data to vector
+            // push data to map
+        // completed
 
         fstream inFile;
         string strFileName;
@@ -167,16 +175,14 @@ public:
         }
         else
         {
-            // Create a record
-            // push data to vector
-            // push data to map
-            // completed
+            
             puts("File found");
             tagRecord *ptrtagRecord = new tagRecord;
             while (inFile.read(reinterpret_cast<char *>(ptrtagRecord), sizeof(tagRecord) -sizeof(ptrtagRecord->mapService)))
             {
-                ptrtagRecord->SetAccountNo(vecRecord.size() + 1) ; 
+                ptrtagRecord->SetAccountNo(vecRecord.size() + 1) ;
                 ptrtagRecord->ReadServiceData(inFile);
+                
                 vecRecord.push_back(ptrtagRecord);
                 mapRecord[atoll(ptrtagRecord->GetMobile().c_str())] = ptrtagRecord;
                 ptrtagRecord = new tagRecord;
@@ -188,21 +194,18 @@ public:
     void WriteRecordsToBinary()
     {
         // memory delete karna mat bhulna
-        // delete file
-        // write to file
-        remove("bank.bin");
+        
         fstream outFile;
         outFile.open("bank.bin", ios::out | ios::binary);
         long SIZE = vecRecord.size();
         for (int lnCounter = 0; lnCounter < SIZE; lnCounter++)
         {
-            // outFile.write(reinterpret_cast<char *>(*it), sizeof(tagRecord));
             outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]), sizeof(tagRecord) - 48);
-            for(auto it:vecRecord[lnCounter]->mapService){
-                  if (vecRecord[lnCounter]->nServiceFlag & it.first)
-            {
-                outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[it.first]), mapServiceSize[it.first]);
-            }
+            for(auto &it:(vecRecord[lnCounter]->mapService)){
+                if ((vecRecord[lnCounter]->nServiceFlag) & (it.first))
+                {
+                    outFile.write(reinterpret_cast<char *>(it.second), mapServiceSize[it.first]);
+                }
             }
             // if ((vecRecord[lnCounter]->nServiceFlag & SAVINGS_ACCOUNT) == SAVINGS_ACCOUNT)
             // {
@@ -248,6 +251,8 @@ public:
             // {
             //     outFile.write(reinterpret_cast<char *>(vecRecord[lnCounter]->mapService[LIFE_INSURANCE]), sizeof(tagLifeInsurance));
             // }
+
+            
             // Free memory used by services
             for (auto &it : vecRecord[lnCounter]->mapService)
             {
@@ -255,8 +260,6 @@ public:
             }
             // delete is faster than free , when datatype of pointer is known use delete
            delete(vecRecord[lnCounter]);
-
-
         }
 
         outFile.close();
@@ -278,7 +281,7 @@ public:
         // create csv file
         remove("export.csv");
         lExportFile.open("export.csv", ios::out | ios::trunc);
-        \
+        
         // loop through all records
         lExportFile << "Account Number,First Name,Last Name,City,Mobile,Email,Saving Account Balance,Current Account Balance,Fixed Deposit count,Fixed Deposit Amount,Mutual Fund Amount,Demat,Nomination count,n1,n2,n3,Life Insurance count,Insurance policy coverage" << endl;
         lExportFile << endl;
@@ -360,6 +363,7 @@ void TestMode()
 // Driver program
 int main()
 {
+    cout<<sizeof(tagPassbook)<<endl;
 mapServiceSize[SAVINGS_ACCOUNT]=sizeof(tagSavingAccount);
 mapServiceSize [CURRENT_ACCOUNT]=sizeof(tagCurrentAccount);
 mapServiceSize [LOCKER]=sizeof(tagLocker);

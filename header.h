@@ -569,10 +569,10 @@ cout<<"\n2.Current Account";
 
                 if (lstrTemp[0] == 'Y' || lstrTemp[0] == 'y' )
                 {
-                    tagLocker*ptr=new tagLocker;
-                    ptr->Create();
-                    ptr->Display();
-                    mapService[LOCKER]=ptr;
+                    // tagLocker*ptr=new tagLocker;
+                    // ptr->Create();
+                    // ptr->Display();
+                    // mapService[LOCKER]=ptr;
                    if(!(nServiceFlag & LOCKER)){
                          nServiceFlag+=LOCKER;
                     }
@@ -595,11 +595,11 @@ cout<<"\n2.Current Account";
                 cin >> lstrTemp;
                 if(lstrTemp[0] == 'Y' ||lstrTemp[0] == 'y' )
                 {
-                    tagPassbook *ptr=new tagPassbook;
+                    // tagPassbook *ptr=new tagPassbook;
 
-                    ptr->Create();
-                    ptr->Display();
-                    mapService[PASSBOOK]=ptr;
+                    // ptr->Create();
+                    // ptr->Display();
+                    // mapService[PASSBOOK]=ptr;
                    if(!(nServiceFlag & PASSBOOK)){
                          nServiceFlag+=PASSBOOK;
                     }
@@ -622,10 +622,10 @@ cout<<"\n2.Current Account";
                 cin >> lstrTemp;
                 if (lstrTemp[0] == 'Y' || lstrTemp[0] == 'y' )
                 {
-                    tagEStatement *ptr=new tagEStatement;
-                    ptr->Create();
-                    ptr->Display();
-                    mapService[ESTATEMENT]=ptr;
+                    // tagEStatement *ptr=new tagEStatement;
+                    // ptr->Create();
+                    // ptr->Display();
+                    // mapService[ESTATEMENT]=ptr;
                   if(!(nServiceFlag & ESTATEMENT)){
                          nServiceFlag+=ESTATEMENT;
                     }
@@ -1112,22 +1112,25 @@ if((nServiceFlag&MUTUAL_FUND)==MUTUAL_FUND)
             inFile.read((char*)ptr,sizeof(tagCurrentAccount));
             mapService[CURRENT_ACCOUNT]=ptr;
         }
-         if((nServiceFlag&LOCKER)==LOCKER)
-        {
-            tagLocker*ptr=new tagLocker;
-            inFile.read((char*)ptr,sizeof(tagLocker));
-            mapService[LOCKER]=ptr;
-        }
-            if((nServiceFlag&PASSBOOK)==PASSBOOK)
-        {
-            tagPassbook*ptr=new tagPassbook;
-            inFile.read((char*)ptr,sizeof(tagPassbook));
-            mapService[PASSBOOK]=ptr;
-        }
+        
+        //  if((nServiceFlag&LOCKER)==LOCKER)
+        // {
+        //     tagLocker*ptr=new tagLocker;
+        //     inFile.read((char*)ptr,sizeof(tagLocker));
+        //     mapService[LOCKER]=ptr;
+        // }
+        //     if((nServiceFlag&PASSBOOK)==PASSBOOK)
+        // {
+        //     tagPassbook*ptr=new tagPassbook;
+        //     inFile.read((char*)ptr,sizeof(tagPassbook));
+        //     mapService[PASSBOOK]=ptr;
+        // }
+        
         if((nServiceFlag&MEDICAL_INSURANCE)==MEDICAL_INSURANCE)
         {
             tagMedicalInsurance*ptr=new tagMedicalInsurance;
             inFile.read((char*)ptr,sizeof(tagMedicalInsurance));
+
             mapService[MEDICAL_INSURANCE]=ptr;
         }
         if((nServiceFlag&LIFE_INSURANCE)==LIFE_INSURANCE)
@@ -1136,6 +1139,7 @@ if((nServiceFlag&MUTUAL_FUND)==MUTUAL_FUND)
             inFile.read((char*)ptr,sizeof(tagLifeInsurance));
             mapService[LIFE_INSURANCE]=ptr;
         }
+        
         if((nServiceFlag&MUTUAL_FUND)==MUTUAL_FUND)
         {
             tagMutualFund*ptr=new tagMutualFund;
@@ -1149,8 +1153,6 @@ if((nServiceFlag&MUTUAL_FUND)==MUTUAL_FUND)
             mapService[FIXED_DEPOSIT]=ptr;
         }
         
-        
-
         if((nServiceFlag&DEMAT)==DEMAT)
         {
             tagDemat*ptr=new tagDemat;
@@ -1163,12 +1165,12 @@ if((nServiceFlag&MUTUAL_FUND)==MUTUAL_FUND)
             inFile.read((char*)ptr,sizeof(tagNomination));
             mapService[NOMINATION]=ptr;
         }
-        if((nServiceFlag&ESTATEMENT)==ESTATEMENT)
-        {
-            tagEStatement*ptr=new tagEStatement;
-            inFile.read((char*)ptr,sizeof(tagEStatement));
-            mapService[ESTATEMENT]=ptr;
-        }
+        // if((nServiceFlag&ESTATEMENT)==ESTATEMENT)
+        // {
+        //     tagEStatement*ptr=new tagEStatement;
+        //     inFile.read((char*)ptr,sizeof(tagEStatement));
+        //     mapService[ESTATEMENT]=ptr;
+        // }
    
       
        
