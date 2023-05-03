@@ -3,27 +3,27 @@ A training project assigned by Respected  Sharad Kumar Bothra Sir as a opportuni
 SDLC - Software developer Life cycle
 
 # Objective
-The goal is to make a Bank record management system
+The goal is to make a Bank record management system.f
 
-### Functionalites
+### Functionalities
 1. A menu with CRUD operations 
 2. Importing and exporting data using Binary files
 3. Making efficient use of memory and computational resources
 
-# Conlusion
+# Conclusion
 
 It was a good idea to give this kind of assignment . I got to experience SDLC worked in the role of
 
 - Initiator
-understand srs
-efficient system design
-eg.using map in structure for services, pointers of objects to reduce continuous memory requirements
+1.understand srs
+2.efficient system design
+3.eg.using map in structure for services, pointers of objects to reduce continuous memory requirements
 
 - Enhancer
-understanding code of another dev.
-Adding features to the existing codebase
+1.understanding code of another dev.
+2.Adding features to the existing codebase
 
 - Quality assurance
-Testing criterios
-Managing testcases in Excel
-Communicating issues in the application to the enhancer
+1.Testing criterios
+2.Managing testcases in Excel
+3.Communicating issues in the application to the enhancer
